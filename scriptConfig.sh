@@ -1,8 +1,5 @@
 #!/bin/bash
 
-instalar_Utilitarios
-instalar_Postgres
-
 # Funcao Instalacao Postgres
 instalar_Postgres() {
 	dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
@@ -34,3 +31,6 @@ configurar_scripts(){
 	#wget -c <scriptReindex>	
 	#wget -c <scriptVacuum_Reindex>
 }
+
+instalar_Utilitarios
+instalar_Postgres

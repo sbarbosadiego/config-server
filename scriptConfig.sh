@@ -10,6 +10,7 @@ instalar_Postgres() {
     dnf install postgresql$PG_VERSAO-contrib -y
 }
 
+# Funcao para configurar o diretorio que vai ser salvo o banco de dados
 configurar_Postgres() {
     local service_file="/usr/lib/systemd/system/postgresql-${PG_VERSAO}.service"
     if [ -f "$service_file" ]; then
@@ -28,34 +29,37 @@ configurar_Postgres() {
 tuning_Postgres() {
     local config_file="/dados/pgsql/$PG_VERSAO/data/postgresql.conf"
 
+    # Verifica se o arquivo existe
     if [ -f "$config_file" ]; then
-        # Aplica as configurações diretamente no arquivo
-        sed -i "s|^#?datestyle.*|datestyle = 'iso, mdy'|" "$config_file"
-        sed -i "s|^#?standard_conforming_strings.*|standard_conforming_strings = off|" "$config_file"
-        sed -i "s|^#?listen_addresses.*|listen_addresses = '*'|" "$config_file"
-        sed -i "s|^#?port.*|port = 8745|" "$config_file"
-        sed -i "s|^#?tcp_keepalives_idle.*|tcp_keepalives_idle = 10|" "$config_file"
-        sed -i "s|^#?tcp_keepalives_interval.*|tcp_keepalives_interval = 10|" "$config_file"
-        sed -i "s|^#?tcp_keepalives_count.*|tcp_keepalives_count = 10|" "$config_file"
-        sed -i "s|^#?log_destination.*|log_destination = 'stderr'|" "$config_file"
-        sed -i "s|^#?logging_collector.*|logging_collector = off|" "$config_file"
-        sed -i "s|^#?log_directory.*|log_directory = 'log'|" "$config_file"
-        sed -i "s|^#?log_rotation_age.*|log_rotation_age = 1d|" "$config_file"
-        sed -i "s|^#?log_filename.*|log_filename = 'postgresql-%a.log'|" "$config_file"
-        sed -i "s|^#?log_rotation_size.*|log_rotation_size = 20MB|" "$config_file"
-        sed -i "s|^#?log_truncate_on_rotation.*|log_truncate_on_rotation = on|" "$config_file"
-        sed -i "s|^#?enable_seqscan.*|enable_seqscan = on|" "$config_file"
-        sed -i "s|^#?enable_partitionwise_join.*|enable_partitionwise_join = on|" "$config_file"
-        sed -i "s|^#?enable_partitionwise_aggregate.*|enable_partitionwise_aggregate = on|" "$config_file"
-        sed -i "s|^#?password_encryption.*|password_encryption = md5|" "$config_file"
-        sed -i "s|^#?default_statistics_target.*|default_statistics_target = 1000|" "$config_file"
-
+        # Executa os comandos como usuário postgres
+        sudo -u postgres bash -c "
+            sed -i '694s|.*|datestyle = '\''iso, mdy'\''|' \"$config_file\"
+            sed -i '758s|.*|standard_conforming_strings = off|' \"$config_file\"
+            sed -i '60s|.*|listen_addresses = '\''*'\''|' \"$config_file\"
+            sed -i '64s|.*|port = 8745|' \"$config_file\"
+            sed -i '80s|.*|tcp_keepalives_idle = 10|' \"$config_file\"
+            sed -i '82s|.*|tcp_keepalives_interval = 10|' \"$config_file\"
+            sed -i '84s|.*|tcp_keepalives_count = 10|' \"$config_file\"
+            sed -i '433s|.*|log_destination = '\''stderr'\''|' \"$config_file\"
+            sed -i '439s|.*|logging_collector = off|' \"$config_file\"
+            sed -i '445s|.*|log_directory = '\''log'\''|' \"$config_file\"
+            sed -i '451s|.*|log_rotation_age = 1d|' \"$config_file\"
+            sed -i '447s|.*|log_filename = '\''postgresql-%a.log'\''|' \"$config_file\"
+            sed -i '453s|.*|log_rotation_size = 20MB|' \"$config_file\"
+            sed -i '456s|.*|log_truncate_on_rotation = on|' \"$config_file\"
+            sed -i '378s|.*|enable_seqscan = on|' \"$config_file\"
+            sed -i '376s|.*|enable_partitionwise_join = on|' \"$config_file\"
+            sed -i '377s|.*|enable_partitionwise_aggregate = on|' \"$config_file\"
+            sed -i '96s|.*|password_encryption = md5|' \"$config_file\"
+            sed -i '416s|.*|default_statistics_target = 1000|' \"$config_file\"
+        "
         echo "Configurações de tuning aplicadas com sucesso no arquivo $config_file."
     else
         echo "Arquivo $config_file não encontrado. Verifique se o PostgreSQL foi inicializado corretamente."
         exit 1
     fi
 }
+
 
 # Utilitarios
 instalar_Utilitarios() {
@@ -85,4 +89,5 @@ configurar_Scripts(){
 instalar_Utilitarios
 instalar_Postgres
 configurar_Postgres
+tuning_Postgres
 configurar_Scripts

@@ -79,11 +79,16 @@ configurar_Scripts(){
     mkdir util
     chmod 777 -R util/
     cd util
-    #wget -c <scriptPgAmCheck>
-    #wget -c <scrptDump>
-    #wget -c <scriptVacuum>
-    #wget -c <scriptReindex>    
-    #wget -c <scriptVacuum_Reindex>
+    wget -c https://raw.githubusercontent.com/sbarbosadiego/config-server/refs/heads/main/scriptPgAmCheck.sh
+    wget -c https://raw.githubusercontent.com/sbarbosadiego/config-server/refs/heads/main/scriptDump.sh
+    wget -c https://raw.githubusercontent.com/sbarbosadiego/config-server/refs/heads/main/scriptVacuum.sh
+    wget -c https://raw.githubusercontent.com/sbarbosadiego/config-server/refs/heads/main/scriptReindex.sh    
+    wget -c https://raw.githubusercontent.com/sbarbosadiego/config-server/refs/heads/main/scriptVacuumReindex.sh
+    chmod +x scriptPgAmCheck.sh
+    chmod +x scriptDump.sh
+    chmod +x scriptVacuum.sh
+    chmod +x scriptReindex.sh
+    chmod +x scriptVacuumReindex.sh
 }
 
 instalar_Utilitarios

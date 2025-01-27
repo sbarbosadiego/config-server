@@ -84,11 +84,7 @@ configurar_Scripts(){
     wget -c https://raw.githubusercontent.com/sbarbosadiego/config-server/refs/heads/main/scriptVacuum.sh
     wget -c https://raw.githubusercontent.com/sbarbosadiego/config-server/refs/heads/main/scriptReindex.sh    
     wget -c https://raw.githubusercontent.com/sbarbosadiego/config-server/refs/heads/main/scriptVacuumReindex.sh
-    chmod +x scriptPgAmCheck.sh
-    chmod +x scriptDump.sh
-    chmod +x scriptVacuum.sh
-    chmod +x scriptReindex.sh
-    chmod +x scriptVacuumReindex.sh
+    chmod +x scriptDump.sh scriptPgAmCheck.sh scriptVacuum.sh scriptReindex.sh scriptVacuumReindex.sh
 }
 
 instalar_Utilitarios

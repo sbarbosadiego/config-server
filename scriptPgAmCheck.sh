@@ -1,9 +1,10 @@
 #!/bin/bash
 
-DB_HOST="localhost"
-DB_PORT="5432"
+DB_HOST="127.0.0.1"
+DB_PORT="8745"
 DB_USER="postgres"
 DB_NAME="banco"
+CLIENTE_NOME="nome_cliente"
 ERROR_LOG="/tmp/pg_amcheck_error.log"
 EMAIL="exemplo@gmail.com"
 DESTEMAILS=("exemplo@gmail.com" "exemplo@gmail.com" "exemplo@gmail.com")
@@ -25,7 +26,7 @@ if [ $EXIT_CODE -ne 0 ]; then
     sendEmail -f "$EMAIL" \
         -t "$DESTEMAIL" \
         -s smtp.gmail.com:587 \
-        -u "Alerta: Verificação via pg_amcheck Falhou [$DB_NAME]" \
+        -u "Alerta: Verificação via pg_amcheck Falhou $CLIENTE_NOME" \
         -m "Prezado,\n\nValidação via pg_amcheck para o banco de dados '$DB_NAME' falhou. Detalhes do erro:\n\n$ERROR_MESSAGE\n\nPor favor, entre em contato com a VR Software para suporte.\n\nAtenciosamente,\nEquipe de Suporte VR Software" \
         -xu "$EMAIL" \
         -xp "$EMAILPASS" \
@@ -37,7 +38,7 @@ fi
 sendEmail -f "$EMAIL" \
     -t "$DESTEMAIL" \
     -s smtp.gmail.com:587 \
-    -u "Relatório: Verificação via pg_amcheck Concluído com Sucesso [$DB_NAME]" \
+    -u "Relatório: Verificação via pg_amcheck Concluído com Sucesso $CLIENTE_NOME" \
     -m "Prezado Cliente,\n\nValidação via pg_amcheck para o banco de dados '$DB_NAME' foi concluída com sucesso.\n\nAtenciosamente,\nEquipe de Suporte VR Software" \
     -xu "$EMAIL" \
     -xp "$EMAILPASS" \

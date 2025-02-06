@@ -3,12 +3,12 @@
 DB_HOST="127.0.0.1"
 DB_PORT="8745"
 DB_USER="postgres"
-DB_NAME="banco"
-CLIENTE_NOME="nome_cliente"
+DB_NAME="vr"
+CLIENTE_NOME="LOJA"
 ERROR_LOG="/tmp/pg_amcheck_error.log"
-EMAIL="exemplo@gmail.com"
-DESTEMAILS=("exemplo@gmail.com" "exemplo@gmail.com" "exemplo@gmail.com")
-EMAILPASS="senha"
+EMAIL="EX.gmail.com"
+DESTEMAILS=("EX.gmail.com" "EX.gmail.com")
+EMAILPASS="SENHA"
 BIN_POSTGRES="/usr/pgsql-14/bin/"
 
 $BIN_POSTGRES/pg_amcheck -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" &> "$ERROR_LOG"

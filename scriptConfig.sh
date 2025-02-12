@@ -2,7 +2,33 @@
 
 PG_VERSAO="14"
 
-# Funcao Instalacao Postgres
+# Verifica distribuicao linux utilizada
+validar_Distro() {    
+    if [ -f /etc/os-release ]; then
+        . /etc/os-release
+        if [[ "$ID" =~ ^(rocky|almalinux|rhel)$ && "$VERSION_ID" =~ ^8 ]]; then
+            echo "✅ Distro compatível: $PRETTY_NAME"
+        else
+            echo "❌ Distro incompatível com o script"
+            exit 1
+        fi
+    else
+        echo "❌ Não foi possível determinar a distro. O arquivo /etc/os-release não foi encontrado."
+        exit 1
+    fi
+}
+
+# Verifica se existe a particao /dados
+verificar_particao() {
+    if mount | grep -q " on /dados "; then
+        echo "✅ Partição /dados encontrada."
+    else
+        echo "❌ Partição /dados não encontrada."
+        exit 1
+    fi
+}
+
+# Instalacao Postgres
 instalar_Postgres() {
     dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
     dnf -qy module disable postgresql
@@ -10,7 +36,7 @@ instalar_Postgres() {
     dnf install postgresql$PG_VERSAO-contrib -y
 }
 
-# Funcao para configurar o diretorio que vai ser salvo o banco de dados
+# Configura o diretorio que vai ser salvo o banco de dados
 configurar_Postgres() {
     local service_file="/usr/lib/systemd/system/postgresql-${PG_VERSAO}.service"
     if [ -f "$service_file" ]; then
@@ -26,6 +52,7 @@ configurar_Postgres() {
     sudo systemctl enable postgresql-${PG_VERSAO}
 }
 
+# Realiza o tuning do banco de dados
 tuning_Postgres() {
     local config_file="/dados/pgsql/$PG_VERSAO/data/postgresql.conf"
 
@@ -60,8 +87,7 @@ tuning_Postgres() {
     fi
 }
 
-
-# Utilitarios
+# Funcao para instalar alguns aplicativos uteis na manutencao do servidor
 instalar_Utilitarios() {
     dnf install epel-release -y
     dnf install htop -y
@@ -74,6 +100,7 @@ instalar_Utilitarios() {
     dnf update -y
 }
 
+# Configura um diretorio com todos os scripts que podem ser utilizados no servidor
 configurar_Scripts(){
     cd /
     mkdir util
@@ -84,9 +111,12 @@ configurar_Scripts(){
     wget -c https://raw.githubusercontent.com/sbarbosadiego/config-server/refs/heads/main/scriptVacuum.sh
     wget -c https://raw.githubusercontent.com/sbarbosadiego/config-server/refs/heads/main/scriptReindex.sh    
     wget -c https://raw.githubusercontent.com/sbarbosadiego/config-server/refs/heads/main/scriptVacuumReindex.sh
-    chmod +x scriptDump.sh scriptPgAmCheck.sh scriptVacuum.sh scriptReindex.sh scriptVacuumReindex.sh
+    wget -c https://raw.githubusercontent.com/sbarbosadiego/config-server/refs/heads/main/scriptBackup.sh
+    chmod +x scriptDump.sh scriptPgAmCheck.sh scriptVacuum.sh scriptReindex.sh scriptVacuumReindex.sh scriptBackup.sh
 }
 
+validar_Distro
+verificar_particao
 instalar_Utilitarios
 instalar_Postgres
 configurar_Postgres

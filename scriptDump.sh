@@ -2,17 +2,17 @@
 
 HOST="127.0.0.1"
 PORT="8745"
-DB_NAME="vr"
+DB_NAME="exemplo"
 USER="postgres"
 PASSWORD=""
 
-CLIENT_NAME="cliente1"
+CLIENT_NAME="exemplo"
 SAMBA_PATH="192.168.0.100/backups"
 SAMBA_USER=""
 SAMBA_PASSWORD=""
 
-BACKUP_DIR="/vr/backup"
-LOG_DIR="/vr/backup/logs"
+BACKUP_DIR="/exemplo/backup"
+LOG_DIR="/exemplo/backup/logs"
 
 BACKUP_PATH="$BACKUP_DIR/$CLIENT_NAME"
 LOG_PATH="$LOG_DIR/$CLIENT_NAME"
